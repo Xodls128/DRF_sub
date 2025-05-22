@@ -5,8 +5,11 @@ from rest_framework import status
 from .models import Book, Review
 from .serializers import BookSerializer, ReviewSerializer
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 class BookListCreateAPIView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
     def get(self, request):
         books = Book.objects.all()
         serializer = BookSerializer(books, many=True)
@@ -20,6 +23,8 @@ class BookListCreateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class BookDetailAPIView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
     def get(self, request, pk):
         book = get_object_or_404(Book, pk=pk)
         serializer = BookSerializer(book)
