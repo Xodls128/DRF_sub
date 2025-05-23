@@ -4,9 +4,16 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from .serializers import UserSignupSerializer, UserLoginSerializer
+from drf_spectacular.utils import extend_schema
 
 
 class SignupView(APIView):   
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny]
+    @extend_schema(
+        request=UserLoginSerializer,
+        responses={200: None}
+    )
     def post(self, request):
         serializer = UserSignupSerializer(data=request.data)
         if serializer.is_valid():
@@ -15,6 +22,12 @@ class SignupView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny]
+    @extend_schema(
+        request=UserLoginSerializer,
+        responses={200: None}
+    )
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -30,6 +43,10 @@ class LoginView(APIView):
     
 class LogoutView(APIView):
     permission_classes = [permissions.IsAuthenticated]
+    @extend_schema(
+        responses={200: None}
+    )
+   
 
     def post(self, request):
         logout(request)
